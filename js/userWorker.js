@@ -4,9 +4,7 @@ self.addEventListener('message', function(e) {
         data = {};
 
     user[1] += 1; // age + 1
-
-    data.userData = user.buffer;
-    data.userData = e.data.userData;
+    data.userData = buff;
 
     self.postMessage(data, [data.userData]);
 });
