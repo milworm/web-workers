@@ -1,0 +1,45 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Web Workers</title>
+</head>
+<body>
+    <script>
+        stringWorker = new Worker('./js/stringWorker.js');
+
+        stringWorker.addEventListener('message', function(e) {
+            console.log(e.data);
+        });
+
+        stringWorker.postMessage('world');
+        stringWorker.postMessage('hello');
+
+        // Transferable objects.
+
+        userWorker = new Worker('./js/userWorker.js');
+        // int id [4]
+        // int age [4]
+        // int salary [4]
+        var userBuffer = new ArrayBuffer(12),
+            userBufferView = new Int32Array(userBuffer),
+            data = {};
+
+        userBufferView[0] = 1;
+        userBufferView[1] = 25;
+        userBufferView[2] = 120000;
+
+        data.userData = userBufferView.buffer;
+        data.userData = userBuffer;
+
+        userWorker.addEventListener('message', function(e) {
+            var user = new Int32Array(e.data.userData);
+
+            console.log('id: ' + user[0]);
+            console.log('age: ' + user[1]);
+            console.log('salary: ' + user[2]);
+        });
+
+        userWorker.postMessage(data, [data.userData]);
+    </script>
+</body>
+</html>
